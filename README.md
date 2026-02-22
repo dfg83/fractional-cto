@@ -1,4 +1,4 @@
-# vibe-cto
+# fractional-cto
 
 Your AI CTO co-pilot -- opinionated, research-backed Claude Code plugins for building SaaS products that ship.
 
@@ -24,16 +24,16 @@ Each plugin includes principle skills with review checklists, working code examp
 Register the marketplace once:
 
 ```bash
-/plugin marketplace add oborchers/vibe-cto
+/plugin marketplace add oborchers/fractional-cto
 ```
 
 Then install any plugin:
 
 ```bash
-/plugin install saas-design-principles@vibe-cto
-/plugin install api-design-principles@vibe-cto
-/plugin install pedantic-coder@vibe-cto
-/plugin install python-package@vibe-cto
+/plugin install saas-design-principles@fractional-cto
+/plugin install api-design-principles@fractional-cto
+/plugin install pedantic-coder@fractional-cto
+/plugin install python-package@fractional-cto
 ```
 
 ### Local Development
@@ -41,10 +41,10 @@ Then install any plugin:
 Test a specific plugin directly:
 
 ```bash
-claude --plugin-dir /path/to/vibe-cto/saas-design-principles
-claude --plugin-dir /path/to/vibe-cto/api-design-principles
-claude --plugin-dir /path/to/vibe-cto/pedantic-coder
-claude --plugin-dir /path/to/vibe-cto/python-package
+claude --plugin-dir /path/to/fractional-cto/saas-design-principles
+claude --plugin-dir /path/to/fractional-cto/api-design-principles
+claude --plugin-dir /path/to/fractional-cto/pedantic-coder
+claude --plugin-dir /path/to/fractional-cto/python-package
 ```
 
 ## Adding Future Plugins

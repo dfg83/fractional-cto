@@ -5,7 +5,7 @@
   "author": {
     "name": "Dr. Oliver Borchers"
   },
-  "repository": "https://github.com/oborchers/vibe-cto",
+  "repository": "https://github.com/oborchers/fractional-cto",
   "license": "MIT",
   "keywords": ["python", "packaging", "pyproject-toml", "pytest", "ruff", "mypy", "ci-cd", "documentation", "versioning", "api-design", "security", "best-practices"]
 }

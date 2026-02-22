@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**vibe-cto** is a Claude Code plugin marketplace containing opinionated, research-backed plugins for building SaaS products. It is purely markdown/JSON/bash — no build system, no runtime dependencies, no tests to run.
+**fractional-cto** is a Claude Code plugin marketplace containing opinionated, research-backed plugins for building SaaS products. It is purely markdown/JSON/bash — no build system, no runtime dependencies, no tests to run.
 
 ## Local Development
 
 ```bash
 # Test a plugin locally
-claude --plugin-dir /path/to/vibe-cto/api-design-principles
-claude --plugin-dir /path/to/vibe-cto/saas-design-principles
+claude --plugin-dir /path/to/fractional-cto/api-design-principles
+claude --plugin-dir /path/to/fractional-cto/saas-design-principles
 ```
 
 There is no build step, linter, or test suite. Validation is manual: start a Claude session with the plugin and verify hooks fire, skills invoke, and commands work.

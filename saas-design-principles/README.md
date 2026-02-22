@@ -27,21 +27,21 @@ This plugin provides **principles and examples, not boilerplate.** It tells Clau
 
 ## Installation
 
-### Claude Code (via vibe-cto Marketplace)
+### Claude Code (via fractional-cto Marketplace)
 
 ```bash
 # Register the marketplace (once)
-/plugin marketplace add oborchers/vibe-cto
+/plugin marketplace add oborchers/fractional-cto
 
 # Install the plugin
-/plugin install saas-design-principles@vibe-cto
+/plugin install saas-design-principles@fractional-cto
 ```
 
 ### Local Development
 
 ```bash
 # Test directly with plugin-dir flag
-claude --plugin-dir /path/to/vibe-cto/saas-design-principles
+claude --plugin-dir /path/to/fractional-cto/saas-design-principles
 ```
 
 ## Components

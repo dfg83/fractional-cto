@@ -5,7 +5,7 @@
   "author": {
     "name": "Dr. Oliver Borchers"
   },
-  "repository": "https://github.com/oborchers/vibe-cto",
+  "repository": "https://github.com/oborchers/fractional-cto",
   "license": "MIT",
   "keywords": ["code-quality", "naming", "consistency", "symmetry", "style", "conventions", "organization", "pedantic", "clean-code"]
 }

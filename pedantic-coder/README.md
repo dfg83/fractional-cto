@@ -42,21 +42,21 @@ This plugin provides **universal principles** that apply to every language, plus
 
 ## Installation
 
-### Claude Code (via vibe-cto Marketplace)
+### Claude Code (via fractional-cto Marketplace)
 
 ```bash
 # Register the marketplace (once)
-/plugin marketplace add oborchers/vibe-cto
+/plugin marketplace add oborchers/fractional-cto
 
 # Install the plugin
-/plugin install pedantic-coder@vibe-cto
+/plugin install pedantic-coder@fractional-cto
 ```
 
 ### Local Development
 
 ```bash
 # Test directly with plugin-dir flag
-claude --plugin-dir /path/to/vibe-cto/pedantic-coder
+claude --plugin-dir /path/to/fractional-cto/pedantic-coder
 ```
 
 ## Components
