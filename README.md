@@ -13,6 +13,7 @@ Built by [Dr. Oliver Borchers](https://linkedin.com/in/oliverborchers) -- AI eng
 | **[saas-design-principles](./saas-design-principles)** | 12 | Speed, navigation, forms, tables, auth, accessibility, theming, responsive design, and more -- drawn from Linear, Stripe, Shopify Polaris, and Nielsen Norman Group research |
 | **[api-design-principles](./api-design-principles)** | 12 | Routes, errors, auth, pagination, caching, webhooks, versioning, and more -- drawn from Stripe, GitHub, Twilio, Google, OWASP, and industry RFCs |
 | **[pedantic-coder](./pedantic-coder)** | 16 | Zero-tolerance code pedantry -- naming precision, casing law, structural symmetry, import discipline, CLAUDE.md guidelines compliance, plus language packs for Python, TypeScript, and Go |
+| **[python-package](./python-package)** | 12 | Research-backed Python packaging -- project structure, pyproject.toml, Ruff/mypy, pytest, CI/CD, MkDocs, versioning, API design, wheels, supply chain security, developer experience |
 
 Each plugin includes principle skills with review checklists, working code examples, review commands, a reviewer agent, and a session hook that loads the skill index on startup.
 
@@ -32,6 +33,7 @@ Then install any plugin:
 /plugin install saas-design-principles@vibe-cto
 /plugin install api-design-principles@vibe-cto
 /plugin install pedantic-coder@vibe-cto
+/plugin install python-package@vibe-cto
 ```
 
 ### Local Development
@@ -42,6 +44,7 @@ Test a specific plugin directly:
 claude --plugin-dir /path/to/vibe-cto/saas-design-principles
 claude --plugin-dir /path/to/vibe-cto/api-design-principles
 claude --plugin-dir /path/to/vibe-cto/pedantic-coder
+claude --plugin-dir /path/to/vibe-cto/python-package
 ```
 
 ## Adding Future Plugins
