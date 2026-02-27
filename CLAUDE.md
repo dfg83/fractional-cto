@@ -4,14 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**fractional-cto** is a Claude Code plugin marketplace containing opinionated, research-backed plugins for building SaaS products. It is purely markdown/JSON/bash — no build system, no runtime dependencies, no tests to run.
+**fractional-cto** is a Claude Code plugin marketplace containing opinionated, research-backed plugins for software engineering. It is purely markdown/JSON/bash — no build system, no runtime dependencies, no tests to run.
 
 ## Local Development
 
 ```bash
 # Test a plugin locally
-claude --plugin-dir /path/to/fractional-cto/api-design-principles
-claude --plugin-dir /path/to/fractional-cto/saas-design-principles
+claude --plugin-dir /path/to/fractional-cto/<plugin-name>
 ```
 
 There is no build step, linter, or test suite. Validation is manual: start a Claude session with the plugin and verify hooks fire, skills invoke, and commands work.
@@ -20,9 +19,9 @@ There is no build step, linter, or test suite. Validation is manual: start a Cla
 
 ### Marketplace Registry
 
-`.claude-plugin/marketplace.json` is the central registry listing all available plugins. Each plugin lives in its own top-level directory (e.g., `api-design-principles/`, `saas-design-principles/`).
+`.claude-plugin/marketplace.json` is the central registry listing all available plugins. Each plugin lives in its own top-level directory.
 
-### Plugin Structure (both plugins follow the same pattern)
+### Plugin Structure
 
 ```
 <plugin-name>/
@@ -32,22 +31,22 @@ There is no build step, linter, or test suite. Validation is manual: start a Cla
 │   ├── hooks.json               # Registers SessionStart hook
 │   └── session-start.sh         # Injects meta-skill index into session context
 ├── commands/
-│   └── <name>-review.md         # Manual review command (/api-review, /saas-review)
+│   └── <name>-review.md         # Manual review command
 ├── agents/
 │   └── <name>-reviewer.md       # Comprehensive audit agent (model: sonnet)
 └── skills/
-    ├── using-<name>-principles/ # Meta-skill: index of all 12 principles
-    └── <principle-name>/        # 12 principle skills, each with:
+    ├── using-<name>-principles/ # Meta-skill: index of all principle skills
+    └── <principle-name>/        # Individual principle skills, each with:
         ├── SKILL.md             #   Principles, checklists, good/bad patterns
-        └── examples/            #   Code examples (React/Vue/Svelte or Node.js/Python)
+        └── examples/            #   Code examples relevant to the domain
 ```
 
 ### Activation Flow
 
 1. **SessionStart hook** (`hooks/hooks.json` → `hooks/session-start.sh`) fires on startup/resume/clear/compact
 2. `session-start.sh` reads the meta-skill (`using-*-principles/SKILL.md`), escapes it, and outputs JSON with `additional_context`
-3. Claude now knows the 12 available principle skills and when to invoke each
-4. Skills are invoked automatically when Claude detects relevant work, or manually via `/api-review` or `/saas-review`
+3. Claude now knows the available principle skills and when to invoke each
+4. Skills are invoked automatically when Claude detects relevant work, or manually via the plugin's review command
 
 ### Key Design Decisions
 
@@ -55,13 +54,13 @@ There is no build step, linter, or test suite. Validation is manual: start a Cla
 - **Commands use `disable-model-invocation: true`** — they guide Claude to invoke skills, not execute code
 - **Agents specify `model: sonnet`** and include severity guides (Critical/Important/Suggestion)
 - **`session-start.sh` uses `${CLAUDE_PLUGIN_ROOT}`** to resolve paths relative to the plugin root
-- **Examples cover multiple frameworks** — SaaS: React/Vue/Svelte; API: Node.js/Python
+- **Examples are domain-appropriate** — each plugin uses languages and frameworks relevant to its domain
 
 ## Adding a New Plugin
 
 1. Create a new top-level directory following the plugin structure above
-2. Add the 13 skills (12 principles + 1 meta-skill index)
-3. Create a command, agent, and SessionStart hook mirroring existing plugins
+2. Add principle skills + 1 meta-skill index (skill count varies by plugin)
+3. Create a review command, reviewer agent, and SessionStart hook
 4. Register the plugin in `.claude-plugin/marketplace.json`
 
 ## Adding a New Skill to an Existing Plugin
@@ -76,5 +75,17 @@ There is no build step, linter, or test suite. Validation is manual: start a Cla
 
 - Skill directory names use kebab-case
 - SKILL.md files include review checklists and good/bad pattern comparisons
-- All principles cite real-world sources (Stripe, GitHub, Twilio, Nielsen Norman Group, etc.)
-- Three meta-principles anchor each plugin (documented in the meta-skill and README)
+- Principles cite real-world sources and industry research
+- Meta-principles anchor each plugin (documented in the meta-skill and README)
+
+## Single-Owner Rule for Skill Content
+
+Every concept, rule, or guideline must have exactly **one owner skill** that fully defines it. Other skills that touch the same concept must cross-reference the owner rather than restating or duplicating the content.
+
+**Why:** When a rule appears in multiple skills, values drift (e.g., one says "5 shadow levels," another says "<=4"), scales diverge, and updates require synchronized edits across files. Single ownership eliminates contradictions and makes maintenance tractable.
+
+**How to apply:**
+1. Each measurable rule (e.g., "WCAG 4.5:1 contrast") lives in one skill with full explanation
+2. Other skills that need the rule reference the owner: "Apply WCAG contrast ratios (see `accessibility-inclusive-design` skill)"
+3. The meta-skill index and review checklists may summarize rules, but detailed definitions stay in the owner
+4. When adding new content, check existing skills first — if a concept already has an owner, cross-reference it

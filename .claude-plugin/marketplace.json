@@ -49,6 +49,15 @@
       "author": {
         "name": "Dr. Oliver Borchers"
       }
+    },
+    {
+      "name": "visual-design-principles",
+      "description": "Research-backed visual design principles for websites, presentations, documents, and any visual medium — grounded in VisAWI, Gestalt psychology, WCAG 2.2, and empirical aesthetics research",
+      "version": "0.1.0",
+      "source": "./visual-design-principles",
+      "author": {
+        "name": "Dr. Oliver Borchers"
+      }
     }
   ]
 }
