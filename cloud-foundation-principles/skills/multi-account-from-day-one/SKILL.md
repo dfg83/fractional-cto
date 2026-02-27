@@ -131,32 +131,9 @@ Developers should have full access in dev and sandbox but only read-only access 
 
 ## CI/CD Authentication: No Static Credentials
 
-CI/CD pipelines authenticate to each account via workload identity federation (OIDC), not static API keys. Each account has its own CI/CD role with a trust policy restricting which repositories can assume it.
+CI/CD pipelines authenticate to each account via workload identity federation (OIDC), not static API keys. Each account has its own CI/CD role with a trust policy restricting which repositories can assume it. This means zero stored secrets in your CI/CD system -- no API keys to rotate, no credentials to leak.
 
-```hcl
-# Per-account CI/CD role -- only specific repos can assume it
-resource "cloud_iam_role" "cicd" {
-  name = "cicd-deploy-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Federated = var.oidc_provider_arn
-      }
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Condition = {
-        StringLike = {
-          "${var.oidc_issuer}:sub" = "repo:myorg/infrastructure:*"
-        }
-      }
-    }]
-  })
-}
-```
-
-This means zero stored secrets in your CI/CD system. No API keys to rotate. No credentials to leak. The trust relationship is explicit and auditable.
+The multi-account angle: every account needs its own OIDC role. The trust policy in the dev account allows broader repository access (any branch), while the production account restricts to tag refs only. For the complete OIDC setup (provider configuration, trust policies, subject claim restrictions, per-provider Terraform), see the `zero-static-credentials` skill.
 
 ## Account Email Convention
 

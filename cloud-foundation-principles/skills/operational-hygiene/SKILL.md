@@ -67,35 +67,11 @@ Unattributable costs are uncontrollable costs. Every resource must have an owner
 
 ### Required Tags on Every Resource
 
-| Tag | Purpose | Example |
-|-----|---------|---------|
-| `owner` | Team accountability | `platform`, `billing`, `ml-team` |
-| `environment` | Environment identification | `dev`, `staging`, `prod` |
-| `project` | Service grouping | `myapp-api`, `data-pipeline` |
-| `cost_center` | Financial allocation | `engineering`, `data`, `infrastructure` |
-| `iac_managed` | IaC-managed flag | `terraform`, `pulumi` |
+The canonical required tags list (`owner`, `environment`, `project`, `cost_center`, `iac_managed`) is defined in the `naming-and-labeling-as-code` skill. The labels module produces them automatically — engineers never type them manually.
 
 ### Enforcement in Code
 
-Cost centers are validated at `terraform plan` time using a closed list. Freeform tags are rejected before any resource is created.
-
-```hcl
-# In the labels module -- this runs on every terraform plan
-variable "cost_center" {
-  type        = string
-  description = "Cost center for billing attribution"
-
-  validation {
-    condition = contains(
-      ["engineering", "data", "infrastructure", "ml", "security"],
-      var.cost_center
-    )
-    error_message = "cost_center must be one of: engineering, data, infrastructure, ml, security"
-  }
-}
-```
-
-This pattern means a developer cannot accidentally create resources with `cost_center = "test"` or `cost_center = "misc"`. The labels module rejects it before anything is provisioned.
+Cost centers are validated at `terraform plan` time using a closed list defined in the labels module. The canonical cost center list and the pattern for defining company-specific domains live in the `naming-and-labeling-as-code` skill. Freeform tags are rejected before any resource is created -- a developer cannot accidentally create resources with `cost_center = "test"` or `cost_center = "misc"`. The labels module rejects it before anything is provisioned.
 
 ### Cost Review Cadence
 
@@ -171,25 +147,9 @@ Infrastructure drift occurs when someone modifies a resource outside of Terrafor
 
 ### Scheduled Plan Detection
 
-Run `terraform plan` on a schedule (daily for production, weekly for development). Any planned changes on a clean state indicate drift -- someone changed something outside of Terraform.
+Run `terraform plan` on a schedule (daily for production, weekly for development). Any planned changes on a clean state indicate drift -- someone changed something outside of Terraform. The `terraform plan -detailed-exitcode` flag is critical: exit code 0 means no changes (clean), exit code 2 means drift detected. Alert on exit code 2.
 
-```yaml
-# Scheduled drift detection job
-drift-detection:
-  schedule: "0 6 * * *"  # Daily at 6am UTC
-  steps:
-    - checkout
-    - setup-terraform
-    - terraform init
-    - terraform plan -detailed-exitcode
-    # Exit code 0 = no changes (clean)
-    # Exit code 2 = changes detected (DRIFT!)
-    - if-drift-detected:
-        - post-alert-to-team-channel
-        - create-ticket-for-investigation
-```
-
-The `-detailed-exitcode` flag is critical: exit code 0 means no changes needed (infrastructure matches code), exit code 2 means changes are planned (drift detected). Alert on exit code 2.
+For a complete drift detection pipeline implementation (GitHub Actions workflow with matrix strategy across layers, alerting, and scheduling), see the `unified-cicd-platform` skill.
 
 ### What Drift Indicates
 
@@ -256,7 +216,7 @@ Never create log groups without a retention policy. The default in most cloud pr
 
 | Artifact Type | Retention Policy | Rationale |
 |---------------|-----------------|-----------|
-| Container images | Last 20 tagged, untagged after 7 days | Balance between rollback history and storage cost |
+| Container images | See `container-image-tagging` skill | Retention policy defined with full Terraform example |
 | Database snapshots | 14 days automated, manual snapshots reviewed monthly | Compliance + cost control |
 | Build artifacts | 30 days | Rarely needed after deployment verified |
 | Terraform plan files | 7 days | Only needed during review cycle |
@@ -287,7 +247,7 @@ When designing or reviewing operational hygiene practices:
 
 - [ ] Resource cleanup is a subtask of every migration, experiment, and proof-of-concept ticket
 - [ ] No temporary resources survive longer than one sprint without a documented expiration
-- [ ] Every resource has `owner`, `environment`, `project`, `cost_center`, and `iac_managed` tags
+- [ ] Every resource carries the required tags (see `naming-and-labeling-as-code` skill for the canonical list)
 - [ ] Cost centers are validated at `terraform plan` time via a closed list in the labels module
 - [ ] Cost anomaly alerts are configured (>20% increase from baseline triggers notification)
 - [ ] Every service has monitoring from day one with sensible default thresholds
@@ -296,6 +256,6 @@ When designing or reviewing operational hygiene practices:
 - [ ] Scheduled `terraform plan` runs detect drift daily in production, weekly in development
 - [ ] Console-created resources are imported into Terraform within 48 hours or deleted
 - [ ] Storage lifecycle policies are set on every bucket, log group, and artifact repository
-- [ ] Container registry lifecycle retains last 20 tagged images and cleans up untagged images after 7 days
+- [ ] Container registry lifecycle policies are configured (see `container-image-tagging` skill for retention rules)
 - [ ] Log groups have explicit retention periods (never "retain forever")
 - [ ] Monthly cost reviews identify top cost drivers and unattributed spend

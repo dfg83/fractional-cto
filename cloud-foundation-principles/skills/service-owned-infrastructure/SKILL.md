@@ -57,7 +57,7 @@ Not everything belongs in the service repository. The line is clear:
 
 ## Consuming Shared Infrastructure
 
-Services read from the shared infrastructure layer via remote state references. The service never modifies shared resources -- it only reads their outputs.
+Services read from the shared infrastructure layer via remote state references (the same cross-layer pattern defined in the `repository-and-state-strategy` skill). The service never modifies shared resources -- it only reads their outputs.
 
 ```hcl
 # infrastructure/dev/main.tf

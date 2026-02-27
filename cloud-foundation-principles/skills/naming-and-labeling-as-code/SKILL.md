@@ -95,6 +95,10 @@ When you see any resource name, you immediately know: which team owns it, which 
 
 The labels module enforces a closed list of valid cost centers. This is not optional. Freeform cost center strings guarantee that three months from now your cost reports contain `compute`, `Compute`, `COMPUTE`, `infra`, and `general` -- all meaning the same thing, none of them queryable.
 
+### The Principle: Define Domains Before Creating Resources
+
+The specific cost centers are always company-specific. A machine learning company has different domains than a fintech or a SaaS platform. What matters is: the list exists, it is closed, and it is enforced at plan time. Define your cost domains in the labels module before the first resource is created. Adding a new domain later is a one-line change with a PR review -- not a free-text field that anyone can fill with anything.
+
 ### Good Pattern: Validation at Plan Time
 
 ```hcl
@@ -104,21 +108,18 @@ variable "cost_center" {
 
   validation {
     condition = contains([
-      "compute",
-      "data_pipeline",
-      "observability",
-      "networking",
-      "security",
-      "cicd",
-      "ml_training",
-      "ml_inference",
-      "business_logic",
-      "shared_services"
+      "engineering",      # Application development teams
+      "data",             # Data pipelines, analytics, warehousing
+      "infrastructure",   # Networking, compute, shared platform
+      "security",         # Security tooling, compliance, auditing
+      "operations",       # CI/CD, monitoring, operational tooling
     ], var.cost_center)
-    error_message = "Invalid cost_center '${var.cost_center}'. Must be one of: compute, data_pipeline, observability, networking, security, cicd, ml_training, ml_inference, business_logic, shared_services."
+    error_message = "Invalid cost_center '${var.cost_center}'. Must be from the approved domain list in the labels module."
   }
 }
 ```
+
+The values above are a starting point. Replace them with your company's actual cost domains. The point is not which values you pick -- it is that you pick them explicitly, encode them as a closed list, and reject everything else at plan time.
 
 An invalid cost center is rejected before any resource is created. The engineer sees the error, picks from the list, and moves on. There is no cost center drift.
 
@@ -147,7 +148,7 @@ Every resource must carry these tags, applied automatically by the labels module
 | `environment` | `var.env` | Environment identification -- dev, staging, prod |
 | `project` | `var.name` | Service grouping -- which project owns this resource |
 | `cost_center` | `var.cost_center` | Financial allocation -- where the bill goes |
-| `managed_by` | Hard-coded `"terraform"` | Identifies IaC-managed resources vs. manual |
+| `iac_managed` | Hard-coded `"terraform"` | Identifies IaC-managed resources vs. manual |
 
 Additional tags can be merged, but these five are non-negotiable. The labels module produces them automatically. Engineers never type them manually.
 
