@@ -17,8 +17,9 @@ Built by [Dr. Oliver Borchers](https://linkedin.com/in/oliverborchers) -- AI eng
 | **[cloud-foundation-principles](./cloud-foundation-principles)** | 15 | Cloud infrastructure foundations -- multi-account governance, naming conventions, IaC organization, networking, security, deployment pipelines, operational hygiene, and more -- cloud-agnostic with provider-specific translation tables |
 | **[visual-design-principles](./visual-design-principles)** | 11 | Visual design quality -- layout, typography, color theory, whitespace, accessibility, and more -- grounded in VisAWI, Gestalt psychology, WCAG 2.2, and empirical aesthetics research |
 | **[structured-brainstorming](./structured-brainstorming)** | 1 | Structured thinking methods that counteract LLM reasoning biases -- 8 methods (first principles, inversion, constraint manipulation, perspective forcing, analogy search, MECE, assumption surfacing, diverge-then-converge) with parallel subagent exploration for deep dives |
+| **[retell](./retell)** | 2 | Transform Claude Code conversations into polished, first-person blog posts -- 5-stage interactive pipeline (parse, triage, outline, draft, polish) with human editorial gates, story angle recommendations, author context injection, and style matching |
 
-Each plugin includes principle skills with review checklists, working code examples, review commands, a reviewer agent, and a session hook that loads the skill index on startup.
+Most plugins include principle skills with review checklists, working code examples, review commands, a reviewer agent, and a session hook. Retell is a workflow plugin with a `/retell` command, two Sonnet subagents, and Python scripts for conversation parsing.
 
 ## Installation
 
@@ -40,6 +41,7 @@ Then install any plugin:
 /plugin install cloud-foundation-principles@fractional-cto
 /plugin install visual-design-principles@fractional-cto
 /plugin install structured-brainstorming@fractional-cto
+/plugin install retell@fractional-cto
 ```
 
 ### Local Development
@@ -54,6 +56,7 @@ claude --plugin-dir /path/to/fractional-cto/python-package
 claude --plugin-dir /path/to/fractional-cto/cloud-foundation-principles
 claude --plugin-dir /path/to/fractional-cto/visual-design-principles
 claude --plugin-dir /path/to/fractional-cto/structured-brainstorming
+claude --plugin-dir /path/to/fractional-cto/retell
 ```
 
 ## Adding Future Plugins
