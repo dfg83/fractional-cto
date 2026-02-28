@@ -134,7 +134,8 @@ Using the approved outline:
 6. If thinking blocks are included, weave them as "behind the scenes" narrative — never quote thinking blocks directly, use them to inform the voice ("Behind the scenes, Claude was weighing...")
 7. If a style reference was provided, match its voice patterns: paragraph rhythm, sentence length, use of headers/subheaders, code block frequency, conversational vs. formal register, humor level. The content is original — the style is borrowed.
 8. If public links were provided, weave them naturally where they fit the narrative. Don't dump all links at the end — place them at the moment they become relevant. A GitHub repo link fits when the artifact is first named; a demo link fits at the closing.
-9. Do not invent facts — everything must come from the outline's content and author context
+9. Do not invent facts; everything must come from the outline's content and author context
+10. **Never use em dashes, en dashes, or hyphens as punctuation.** They are a dead giveaway of AI-generated text. Use commas, semicolons, colons, parentheses, or split into separate sentences instead. Hyphens in compound words (e.g., "real-time") are fine.
 
 **Ask the user where to save the blog post** before writing:
 - Default location: `~/Desktop/blogpost-<uuid-prefix>-<date>.md`
@@ -156,6 +157,8 @@ This is a revision loop. The user reads the draft and provides feedback:
 - "Add a transition between sections 2 and 3"
 
 Revise the post based on feedback. Update the file in place. Repeat until the user is satisfied or says "done."
+
+**On every revision pass**, scan for and eliminate any em dashes, en dashes, or hyphens used as punctuation. Rephrase those sentences using commas, semicolons, colons, parentheses, or by splitting into separate sentences.
 
 ## Important Rules
 

@@ -15,13 +15,19 @@ version: 0.1.0
 
 Guide the retell pipeline's LLM stages through editorial decisions: which moments matter, what angle to take, how to structure beats, and how to write in authentic first-person voice. This skill provides the narrative principles and practical heuristics for the Triage, Outline, Draft, and Polish stages.
 
-## Hard Constraint: First-Person Voice
+## Hard Constraints
+
+### First-Person Voice
 
 All blog posts use first-person voice from the author's perspective. This is not configurable.
 
 - "I asked Claude to..." not "The user asked Claude to..."
 - "I rejected the monochrome direction because..." not "Oliver rejected..."
 - "I'd built this brainstorming skill the week before..." not "A brainstorming skill had been built..."
+
+### No Dashes as Punctuation
+
+Never use em dashes, en dashes, or hyphens as punctuation in the final blog post. They are a dead giveaway of AI-generated text. Restructure sentences instead: use commas, semicolons, colons, parentheses, or split into separate sentences. Hyphens in compound words (e.g., "real-time", "well-known") are fine.
 
 ## Story Arc Detection
 
@@ -44,11 +50,11 @@ Every conversation contains beats — moments where something shifts. Classify e
 Long conversations naturally fall into acts:
 
 ```
-ACT 1 — Setup:       What's the goal? What's the plan?
-ACT 2 — Exploration:  Research, first attempts, parallel work
-ACT 3 — Deepening:    Iteration, refinement, pointed questions
-ACT 4 — Convergence:  Options narrow, decisions lock in
-ACT 5 — Resolution:   Final output (may be open-ended)
+ACT 1  Setup:        What's the goal? What's the plan?
+ACT 2  Exploration:  Research, first attempts, parallel work
+ACT 3  Deepening:    Iteration, refinement, pointed questions
+ACT 4  Convergence:  Options narrow, decisions lock in
+ACT 5  Resolution:   Final output (may be open-ended)
 ```
 
 Session boundaries and `/compact` markers are natural act breaks. For technical details on detecting these boundaries, see the `conversation-format` skill.
