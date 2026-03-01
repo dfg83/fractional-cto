@@ -69,6 +69,24 @@ The workflow for every recommendation:
 4. Move to next recommendation
 5. When a skill is complete, move to next skill
 
+**THE CARDINAL RULE: One recommendation per message. One AskUserQuestion per recommendation. No exceptions.**
+
+The following is a **violation** — if you catch yourself doing this, STOP and restart with only the first recommendation:
+
+<violation>
+"Recs 7.1–7.5: SemVer + PEP 440 + Version Source
+
+Rec 7.1 — SemVer decision guide. A 9-row table mapping...
+Rec 7.2 — The 0.x convention. Acknowledges the reality...
+Rec 7.3 — CalVer guidance. Scoped tightly...
+Rec 7.4 — PEP 440 compliance. Maps SemVer syntax...
+Rec 7.5 — Version single source of truth..."
+
+This batches 5 recommendations into one message. The user cannot approve, edit, or remove each individually. This defeats the entire purpose of the review.
+</violation>
+
+The **correct** behavior: present Rec 7.1 alone → call AskUserQuestion → wait for the user's response → only then present Rec 7.2.
+
 For each skill, follow this exact process:
 
 ### Step 1: Present the Skill Overview
@@ -100,6 +118,8 @@ For **each** recommendation, present the following context block before asking f
 5. **Scope & deliberateness** — why the recommendation is scoped the way it is. What it deliberately does *not* cover and why. If the stance is minimal or maximal, explain the rationale.
 6. **Cross-references** — connections to other recommendations in the same skill or in other skills, if any exist. Note if this recommendation is the single owner of a concept or if it defers to another skill.
 
+**STOP.** You have presented ONE recommendation. Do NOT continue to the next recommendation. Do NOT append another `Rec X.Y` block. Call `AskUserQuestion` RIGHT NOW for this single recommendation, then wait for the user's response before doing anything else.
+
 Then **ask the user** — present options:
    - **Approve**: Keep as-is
    - **Edit**: User provides new wording, you apply the change
@@ -110,7 +130,15 @@ If the user chooses "Edit", apply the change immediately using the Edit tool, th
 
 If the user chooses "Discuss", engage in discussion until they're ready to approve, edit, or remove.
 
-Do NOT skip any recommendation. Do NOT batch multiple recommendations together. One at a time.
+Do NOT skip any recommendation. Do NOT batch multiple recommendations together.
+
+**Structural enforcement:** Your message cadence MUST follow this loop with no deviation:
+1. Present ONE context block (Rec X.Y) — a single recommendation, never a range like "Recs X.1–X.5"
+2. Call `AskUserQuestion` with Approve / Edit / Remove / Discuss for that ONE recommendation
+3. Wait for the user's response and handle it
+4. Only after the user has responded → present the NEXT single recommendation (Rec X.Y+1)
+
+If you ever find yourself writing a second `Rec` header in the same message, you are violating this rule. Stop, delete everything after the first recommendation, and call `AskUserQuestion`.
 
 ### Step 3: Review Examples
 
@@ -188,7 +216,7 @@ After presenting the context block for a recommendation or example, call `AskUse
 ## Guidelines
 
 - **You are not the judge.** You present and explain. The user decides what stays, what changes, and what goes.
-- **One recommendation at a time.** Never bundle. The user must engage with each individually.
+- **One recommendation at a time.** Never bundle. Never use range notation like "Recs X.1–X.5". Never present two or more `Rec` headers in the same message. Each message contains exactly ONE context block followed by ONE `AskUserQuestion` call. The user must engage with each recommendation individually before seeing the next one.
 - **Quote exactly.** When presenting a recommendation, show the literal text. Don't paraphrase.
 - **Explain concisely.** The user wrote these skills — they don't need a lecture. A sentence or two on the "why" is enough.
 - **Apply edits immediately.** When the user says "change it to X", make the edit right away and confirm.
