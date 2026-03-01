@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "saas-design-principles",
-      "description": "The holy principles of SaaS design: research-backed guidance for building fast, predictable, and progressively powerful SaaS products",
+      "description": "The holy principles of SaaS design: research-backed, opinionated guidance for building fast, predictable, and progressively powerful SaaS products",
       "version": "0.1.0",
       "source": "./saas-design-principles",
       "author": {
@@ -16,7 +16,7 @@
     },
     {
       "name": "api-design-principles",
-      "description": "Research-backed, opinionated guidance for designing world-class RESTful APIs — routes, naming, errors, auth, caching, webhooks, and more",
+      "description": "Research-backed, opinionated guidance for designing world-class RESTful APIs — routes, naming, errors, auth, caching, webhooks, and more, distilled from Stripe, GitHub, Twilio, Shopify, Google, and Microsoft",
       "version": "0.1.0",
       "source": "./api-design-principles",
       "author": {
@@ -43,7 +43,7 @@
     },
     {
       "name": "cloud-foundation-principles",
-      "description": "Battle-tested, cloud-agnostic guidance for building cloud infrastructure that doesn't rot — multi-account governance, naming conventions, IaC organization, security, deployment pipelines, and operational hygiene",
+      "description": "Research-backed, opinionated guidance for building cloud infrastructure that doesn't rot — multi-account governance, naming conventions, IaC organization, security, deployment pipelines, and operational hygiene, distilled from production experience across multiple cloud migrations",
       "version": "0.1.0",
       "source": "./cloud-foundation-principles",
       "author": {
@@ -52,7 +52,7 @@
     },
     {
       "name": "visual-design-principles",
-      "description": "Research-backed visual design principles for websites, presentations, documents, and any visual medium — grounded in VisAWI, Gestalt psychology, WCAG 2.2, and empirical aesthetics research",
+      "description": "Research-backed visual design principles for websites, presentations, documents, and any visual medium — grounded in VisAWI, Gestalt psychology, and empirical aesthetics research",
       "version": "0.1.0",
       "source": "./visual-design-principles",
       "author": {
@@ -71,7 +71,7 @@
     {
       "name": "retell",
       "description": "Transform Claude Code conversation transcripts into polished, first-person blog posts through an interactive 5-stage pipeline — parse, triage, outline, draft, polish — with human editorial gates at every stage",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./retell",
       "author": {
         "name": "Dr. Oliver Borchers"
