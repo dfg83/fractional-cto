@@ -91,11 +91,16 @@ Parse the SKILL.md content and identify every distinct recommendation, rule, pri
 - Specific guidance statements (e.g., "Always do X", "Never do Y", measurable thresholds)
 - Cross-references to other skills
 
-For **each** recommendation:
+For **each** recommendation, present the following context block before asking for a decision:
 
-1. **Quote it** — show the exact text from the SKILL.md
-2. **Explain it** — in plain language, what is this recommendation saying and why does it matter?
-3. **Ask the user** — present options:
+1. **Header** — `Rec X.Y — <descriptive name> (lines NN-MM)` where X is the skill number, Y is the recommendation number within that skill, and lines reference the SKILL.md
+2. **What it says** — 1-2 sentence plain-language summary of what the recommendation prescribes or prohibits
+3. **Key content verbatim** — reproduce any tables, code blocks, call-outs, pattern comparisons, or threshold values exactly as they appear in the SKILL.md. Do not paraphrase structured content.
+4. **Why it matters** — the reasoning and logic behind the recommendation: what problem it solves, what trade-off it makes, what would go wrong without it
+5. **Scope & deliberateness** — why the recommendation is scoped the way it is. What it deliberately does *not* cover and why. If the stance is minimal or maximal, explain the rationale.
+6. **Cross-references** — connections to other recommendations in the same skill or in other skills, if any exist. Note if this recommendation is the single owner of a concept or if it defers to another skill.
+
+Then **ask the user** — present options:
    - **Approve**: Keep as-is
    - **Edit**: User provides new wording, you apply the change
    - **Remove**: Delete this recommendation from the skill
