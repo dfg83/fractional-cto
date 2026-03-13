@@ -26,10 +26,12 @@ If `--lossless` was passed in arguments, use lossless mode. Otherwise, use `AskU
 - **Lossy (recommended)** — semantic compression with compressor-reviewer loop. Maximum token reduction.
 - **Lossless** — structural optimization only. Zero semantic change.
 
-If `--auto` was passed in arguments, enable auto-approve mode. Otherwise, use `AskUserQuestion` to ask the user about review style (this can be a second question in the same `AskUserQuestion` call as mode selection, or asked immediately after):
+If `--auto` was passed in arguments, enable auto-approve mode and skip the question below. Otherwise, **immediately after** the mode selection answer is received, use `AskUserQuestion` to ask about review style — **do NOT proceed to Step 3 until this question is answered**:
 
 - **Section-by-section (recommended)** — review and approve/skip/edit each section individually.
 - **Auto-approve** — compress all sections without per-section review. The `compression-reviewer` agent still runs in lossy mode and auto-incorporates fixes, but the user is not gated.
+
+**Both mode and review style must be resolved before moving to Step 3.**
 
 ## Step 3: Pre-Analysis
 
@@ -156,5 +158,5 @@ The file has already been updated in-place throughout Step 4. Inform the user: "
 Use `AskUserQuestion` at:
 - File selection (if no argument)
 - Mode selection (if no `--lossless` flag)
-- Review style selection (if no `--auto` flag) — ask together with or immediately after mode selection
+- Review style selection (if no `--auto` flag) — MUST be asked immediately after mode selection, before Step 3
 - Per-section approval (approve/skip/edit) — unless auto-approve is active
