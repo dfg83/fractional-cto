@@ -26,7 +26,10 @@ If `--lossless` was passed in arguments, use lossless mode. Otherwise, use `AskU
 - **Lossy (recommended)** — semantic compression with compressor-reviewer loop. Maximum token reduction.
 - **Lossless** — structural optimization only. Zero semantic change.
 
-If `--auto` was passed in arguments, enable auto-approve mode (skip per-section user review). Otherwise, per-section review is the default — but the user will be offered the option to switch to auto-approve after the first section.
+If `--auto` was passed in arguments, enable auto-approve mode. Otherwise, use `AskUserQuestion` to ask the user about review style (this can be a second question in the same `AskUserQuestion` call as mode selection, or asked immediately after):
+
+- **Section-by-section (recommended)** — review and approve/skip/edit each section individually.
+- **Auto-approve** — compress all sections without per-section review. The `compression-reviewer` agent still runs in lossy mode and auto-incorporates fixes, but the user is not gated.
 
 ## Step 3: Pre-Analysis
 
@@ -105,13 +108,6 @@ Use `AskUserQuestion` for the user's decision:
 
 If the user chooses Edit, accept their replacement text for the section and continue.
 
-**After the first section review**, offer to switch to auto-approve for the remaining sections. Use `AskUserQuestion`:
-
-- **Continue section-by-section** — keep reviewing each section individually
-- **Auto-approve remaining** — compress all remaining sections without further review (reviewer still runs in lossy mode)
-
-This offer appears once, after section 1. If the user chooses section-by-section, do not ask again.
-
 ### 4d: Write Back Immediately
 
 **After every decision (or auto-approval), immediately write the result to the file.** Do not defer writes to the end.
@@ -160,5 +156,5 @@ The file has already been updated in-place throughout Step 4. Inform the user: "
 Use `AskUserQuestion` at:
 - File selection (if no argument)
 - Mode selection (if no `--lossless` flag)
+- Review style selection (if no `--auto` flag) — ask together with or immediately after mode selection
 - Per-section approval (approve/skip/edit) — unless auto-approve is active
-- Auto-approve offer after first section (unless `--auto` flag was passed)
