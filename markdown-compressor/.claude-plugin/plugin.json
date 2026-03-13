@@ -1,6 +1,6 @@
 {
   "name": "markdown-compressor",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Compress LLM agent instructions and code documentation markdown files through iterative section-by-section compression with compressor-reviewer loop — lossless structural optimization and lossy semantic compression modes",
   "author": {
     "name": "Dr. Oliver Borchers"

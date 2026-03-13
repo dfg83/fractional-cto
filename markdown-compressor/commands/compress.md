@@ -59,38 +59,46 @@ Present the structural analysis as a table:
 
 Show the total token count. Then proceed to compression.
 
-## Step 4: Section-by-Section Compression
+## Step 4: Batched Section Compression
 
-Process each non-empty section in order. For each section:
+Process non-empty sections in **batches of 5** to parallelize agent work. Each batch runs compressor agents simultaneously, then reviewer agents simultaneously, then handles results.
 
-### 4a: Compress
+### Batch Loop
 
-Dispatch the `section-compressor` agent with:
+Repeat for each batch of up to 5 non-empty sections:
+
+#### 4a: Compress Batch
+
+Dispatch **all compressor agents in the batch in a single message** (multiple parallel Agent tool calls). Each `section-compressor` agent receives:
 - The section's original text
 - The compression mode (lossless or lossy)
 - The section heading
 - Adjacent section headings for context
 
-### 4b: Review (lossy mode only)
+Agents are read-only (Read/Grep/Glob only) and receive section text in their prompt — they do not read or modify the target file. It is safe to dispatch all agents in a batch simultaneously.
 
-If in lossy mode, dispatch the `compression-reviewer` agent with:
+Wait for all compressor agents in the batch to return before proceeding to 4b.
+
+#### 4b: Review Batch (lossy mode only)
+
+If in lossy mode, dispatch **all reviewer agents in the batch in a single message** (multiple parallel Agent tool calls). Each `compression-reviewer` agent receives:
 - The original section text
-- The compressed section text
+- The compressed section text from 4a
 - The mode
 
-If the reviewer flags critical issues, incorporate the reviewer's suggested restorations into the compressed version before presenting to the user.
+Wait for all reviewer agents in the batch to return. For any section where the reviewer flags critical issues, incorporate the suggested restorations into the compressed version.
 
-### 4c: Present and Decide
+#### 4c: Present and Decide
 
-**If auto-approve is active**, skip user review — go directly to 4d (Write Back). Still show a brief one-line status per section so the user can follow progress:
+**If auto-approve is active**, show a batch summary with one line per section:
 
 ```
 Section [N]/[total]: [heading] — ~X → ~Y tokens (-Z%)
 ```
 
-If the reviewer flagged critical issues in lossy+auto mode, incorporate the reviewer's suggested restorations automatically (the reviewer's judgment acts as the quality gate instead of the user).
+Then proceed directly to 4d for all sections in the batch.
 
-**If auto-approve is NOT active**, show the user the diff:
+**If auto-approve is NOT active**, present each section in the batch one at a time:
 
 ```
 **Section: [heading]**
@@ -101,29 +109,31 @@ Original (~X tokens) → Compressed (~Y tokens) | -Z%
 Changes: [brief list of what changed]
 ```
 
-If the reviewer flagged and the compressor's output was adjusted, note: "Reviewer caught: [what was restored]"
+If the reviewer flagged and the output was adjusted, note: "Reviewer caught: [what was restored]"
 
-Use `AskUserQuestion` for the user's decision:
+Use `AskUserQuestion` for each section's decision:
 - **Approve** — accept the compressed version
 - **Skip** — keep the original section unchanged
 - **Edit** — user provides custom text for this section
 
-If the user chooses Edit, accept their replacement text for the section and continue.
+If the user chooses Edit, accept their replacement text for the section and continue to the next section in the batch.
 
-### 4d: Write Back Immediately
+#### 4d: Write Back
 
-**After every decision (or auto-approval), immediately write the result to the file.** Do not defer writes to the end.
+Write results to file for each section in the batch, in document order (top to bottom):
 
-- **Approve / Auto-approve:** Use the `Edit` tool to replace the original section text with the compressed version in the file.
+- **Approve / Auto-approve:** Use the `Edit` tool to replace the original section text with the compressed version.
 - **Skip:** No edit needed — the original text stays.
 - **Edit:** Use the `Edit` tool to replace the original section text with the user's custom text.
 
-This ensures:
-- Progress is saved incrementally — if the session crashes, approved sections are already written
-- The user can run `git diff` at any point to see cumulative progress
-- No risk of losing work from a failed final assembly
+**Important:** After writing a batch, re-read the file before processing the next batch. Section boundaries shift as earlier sections change length. Use heading text (which is always preserved) to locate sections reliably.
 
-**Important:** After each `Edit`, re-read the file to get the updated content before processing the next section. Section boundaries may shift as earlier sections change length. Use the heading text (which is preserved) to locate the next section reliably.
+### Why Batched
+
+- Compressor and reviewer agents are independent per section — no cross-section dependencies
+- Batch of 5 balances parallelism against API rate limits
+- For 17 sections: ~4 batches instead of 17 sequential rounds (~4x wall-time speedup)
+- In section-by-section mode, pre-computed batches eliminate wait time between reviews within a batch
 
 ## Step 5: Results
 
@@ -151,7 +161,7 @@ The file has already been updated in-place throughout Step 4. Inform the user: "
 
 `AskUserQuestion` must be called from **this command** (the main conversation), never from subagents. The `section-compressor` and `compression-reviewer` agents handle compression and review — they return results. This command presents those results and calls `AskUserQuestion` for every decision gate.
 
-**Pattern:** dispatch compressor agent → receive compressed section → dispatch reviewer agent → receive review → present diff → call `AskUserQuestion` (approve/skip/edit) → **write to file immediately** → next section.
+**Pattern:** for each batch of 5 sections → dispatch all compressor agents in parallel → collect results → dispatch all reviewer agents in parallel → collect results → incorporate fixes → present/auto-approve → write to file → next batch.
 
 ### Decision Points
 
