@@ -1,7 +1,7 @@
 ---
 name: using-deep-research
 description: "This skill should be used when the user asks 'how do I do deep research', 'show me research skills', 'help me research a topic', 'what research methodology should I use', or at the start of any structured web research task. Provides the index of all deep research principle skills and the /research command."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Deep Research Methodology

@@ -48,6 +48,7 @@ You will receive:
    - **INCORRECT claims:** Replace the worker's value with the verified value from the verification report. Use the corrected value and the verifier's source in the final document. Note significant corrections in the Limitations section.
    - **UNVERIFIABLE claims:** Downgrade to hedged language ("One source reports..." or "This could not be independently verified"). Remove if the claim is not essential to the narrative.
    - **OUTDATED claims:** Use the current value from the verification report.
+   - **CONFLICT claims:** Present the worker's value as the primary (it was researched first) but note the discrepancy: "Worker found X from [source]; independent verification found Y from [source]." Include in the Limitations section. Do NOT silently pick one side.
    - **VERIFIED claims with 2+ sources:** These receive High confidence.
    - **VERIFIED claims with 1 source:** These receive Moderate confidence.
 
@@ -127,3 +128,5 @@ You will receive:
 8. **Verification reports override worker content.** When a verification report flags a claim as INCORRECT, use the corrected value from the verification report, not the worker's original claim. Never silently keep a value that failed verification.
 
 9. **Include the Confidence Assessment.** The Confidence Assessment appendix is mandatory. Categorize every major finding as High, Moderate, Low, or Corrected based on verification results. This is not optional — the reader needs to know what is well-established and what is uncertain.
+
+10. **Add volatile metrics disclaimer.** For all numerical stats (GitHub stars, npm downloads, pricing), include the retrieval date. At the top of the Confidence Assessment section, add: "Metrics retrieved [date]; live values may differ."

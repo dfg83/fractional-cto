@@ -50,7 +50,8 @@ You will receive:
    c. If the Verifiable Claims Table has a "Source Text (verbatim)" column, compare the worker's claimed value against the verbatim text.
    d. Assign a verdict:
       - **VERIFIED** — the source confirms the claim
-      - **INCORRECT** — the source says something different (record both the claimed and actual values)
+      - **INCORRECT** — the source unambiguously says something different (e.g., source says MIT, worker says Apache)
+      - **CONFLICT** — verifier's finding differs from worker's, but both have plausible sources or the evidence is ambiguous (e.g., different download counts from different sources)
       - **UNVERIFIABLE** — the URL cannot be fetched, or the specific claim cannot be found in the source content
       - **OUTDATED** — the claim was once true but the source now shows updated information
 
@@ -67,7 +68,7 @@ You will receive:
 
 > Verified: [date]
 > Claims checked: [count]
-> Verified: [count] | Incorrect: [count] | Unverifiable: [count] | Outdated: [count]
+> Verified: [count] | Incorrect: [count] | Conflict: [count] | Unverifiable: [count] | Outdated: [count]
 
 ## Corrections Required
 
@@ -81,6 +82,13 @@ You will receive:
 - **Claimed:** [what the worker wrote]
 - **Current:** [what the source now says]
 - **Source:** [URL fetched]
+
+## Conflicts (Worker vs Verifier — both have sources)
+
+### [Claim — CONFLICT]
+- **Worker's value:** [what the worker wrote] — Source: [URL]
+- **Verifier's value:** [what the verifier found] — Source: [URL]
+- **Likely explanation:** [e.g., different time windows, different package scopes, cached data]
 
 ## Unverifiable Claims
 
@@ -115,3 +123,14 @@ You will receive:
 6. **Flag inverted claims.** Watch for claims where the polarity is reversed (e.g., "requires X" when the source says "does not require X", or "incompatible with" when the source says "compatible with"). These are especially dangerous because they lead to wrong architectural decisions.
 
 7. **Report verbatim source text for corrections.** When a claim is INCORRECT, quote the exact text from the source so the synthesizer has the ground truth.
+
+8. **Use APIs for stat verification.** When verifying GitHub stars, npm downloads, versions, or other registry stats, use the Bash tool to query APIs directly rather than re-searching. Compare the API response to the worker's Verifiable Claims Table.
+
+   **GitHub:** `gh api repos/{owner}/{name} --jq '{stars: .stargazers_count, forks: .forks_count, license: .license.spdx_id}'`
+   **GitHub releases:** `gh api repos/{owner}/{name}/releases/latest --jq '{tag: .tag_name, date: .published_at}'`
+   **npm:** `curl -s https://api.npmjs.org/downloads/point/last-week/{package} | jq .downloads`
+   **PyPI:** `curl -s https://pypistats.org/api/packages/{package}/recent | jq .data.last_week`
+   **crates.io:** `curl -s https://crates.io/api/v1/crates/{crate} | jq '{downloads: .crate.downloads, recent_downloads: .crate.recent_downloads}'`
+   **RubyGems:** `curl -s https://rubygems.org/api/v1/gems/{gem}.json | jq '{downloads: .downloads, version: .version}'`
+
+9. **Flag conflicts, don't assert corrections.** When your finding differs from the worker's but both have plausible sources (e.g., different npm download counts from different snapshots, or a stat that varies by source), mark it as CONFLICT with both values and both sources. Only mark INCORRECT when the evidence is unambiguous — the cited source explicitly contradicts the worker's claim. The synthesizer will handle CONFLICT items by presenting both values or flagging for human review.

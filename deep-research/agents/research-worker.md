@@ -112,3 +112,46 @@ Write your intermediate document with this structure:
 7. **Write incrementally to your output file.** Start writing early — after your first 2-3 searches, create the output file with initial findings. Append new findings as you go using the Edit tool. This flushes information to disk and frees context for better searches. The synthesizer agent will read your final document.
 
 8. **Build the Verifiable Claims table incrementally.** Every time you write a numerical statistic, benchmark result, funding amount, adoption metric, pricing figure, or feature capability claim, add a row to the Verifiable Claims table at the bottom of your document. Copy the exact text from the source into the "Source Text (verbatim)" column. This table is used by the verification agent to spot-check your findings — it is your evidence trail.
+
+9. **Use APIs for verifiable stats.** When reporting stats for GitHub repos, npm packages, PyPI packages, crates, or gems, use the Bash tool to query their APIs directly. Search snippets for stats are unreliable — they may be cached, conflated, or hallucinated. API responses are ground truth. Add the API response to the Verifiable Claims Table as the source text.
+
+   **GitHub** (any language):
+   ```
+   gh api repos/{owner}/{name} --jq '{stars: .stargazers_count, forks: .forks_count, license: .license.spdx_id, language: .language, updated: .updated_at, open_issues: .open_issues_count}'
+   ```
+
+   **npm** (JavaScript/TypeScript):
+   ```
+   curl -s https://api.npmjs.org/downloads/point/last-week/{package} | jq .downloads
+   ```
+
+   **PyPI** (Python):
+   ```
+   curl -s https://pypistats.org/api/packages/{package}/recent | jq .data.last_week
+   ```
+
+   **crates.io** (Rust):
+   ```
+   curl -s https://crates.io/api/v1/crates/{crate} | jq '{downloads: .crate.downloads, recent_downloads: .crate.recent_downloads, max_stable_version: .crate.max_stable_version}'
+   ```
+
+   **Maven Central** (Java/Kotlin):
+   ```
+   Search: "site:mvnrepository.com {artifact}" for usage stats
+   ```
+
+   **RubyGems** (Ruby):
+   ```
+   curl -s https://rubygems.org/api/v1/gems/{gem}.json | jq '{downloads: .downloads, version: .version}'
+   ```
+
+   **GitHub releases** (any repo — for version verification):
+   ```
+   gh api repos/{owner}/{name}/releases/latest --jq '{tag: .tag_name, date: .published_at}'
+   ```
+
+10. **Never state a version you didn't verify.** When reporting a version number (latest release, SDK version, etc.), fetch it from the GitHub releases API (`gh api repos/{owner}/{name}/releases/latest`) or the package registry. Never report a version from a search snippet or memory. Add the version to the Verifiable Claims Table with the API response as source text.
+
+11. **Preserve qualifier language exactly.** When a source uses qualifiers like "recommended", "up to", "starting at", "approximately", "in limited testing", or distinguishes between plan tiers (Free/Pro/Enterprise), copy the qualifier and tier name exactly. Never upgrade "recommended maximum" to "hard limit", rename a pricing tier, or drop a qualifier. If unsure of the exact tier name, quote the source verbatim.
+
+12. **Apply artifact evaluation for package/tool research.** When researching software packages, libraries, tools, or technologies, apply the artifact evaluation framework from the `source-evaluation` skill. Check health signals (last commit, release frequency), adoption signals (stars, downloads, dependents via API), and authority signals (maintainer, license, backing). Include a brief health/adoption/authority assessment in your findings and flag any red flags (bus factor = 1, >6 months inactive, no CI, license issues).

@@ -46,21 +46,41 @@ An artifact must score acceptably on all three dimensions. A widely-adopted but 
 
 ### How to Check Package Health Quickly
 
+Use APIs for exact stats — search snippets are unreliable for numbers:
+
 For npm packages:
-```
-Search: "[package-name] npm" → check weekly downloads, last publish date
-Search: "site:github.com [package-name]" → check stars, last commit, open issues
+```bash
+# Exact weekly downloads (ground truth)
+curl -s https://api.npmjs.org/downloads/point/last-week/{package} | jq .downloads
+# GitHub repo stats
+gh api repos/{owner}/{name} --jq '{stars: .stargazers_count, forks: .forks_count, license: .license.spdx_id, updated: .updated_at, open_issues: .open_issues_count}'
+# Latest version
+gh api repos/{owner}/{name}/releases/latest --jq '{tag: .tag_name, date: .published_at}'
 ```
 
 For PyPI packages:
-```
-Search: "[package-name] pypi" → check monthly downloads, last release
-Search: "site:github.com [package-name]" → check repo health
+```bash
+# Recent download counts (ground truth)
+curl -s https://pypistats.org/api/packages/{package}/recent | jq .data.last_week
+# GitHub repo stats
+gh api repos/{owner}/{name} --jq '{stars: .stargazers_count, forks: .forks_count, updated: .updated_at}'
 ```
 
 For Rust crates:
+```bash
+# Downloads, version, recent downloads (ground truth)
+curl -s https://crates.io/api/v1/crates/{crate} | jq '{downloads: .crate.downloads, recent_downloads: .crate.recent_downloads, max_stable_version: .crate.max_stable_version}'
 ```
-Search: "[crate-name] crates.io" → check downloads, last update
+
+For Ruby gems:
+```bash
+# Downloads and latest version (ground truth)
+curl -s https://rubygems.org/api/v1/gems/{gem}.json | jq '{downloads: .downloads, version: .version}'
+```
+
+For Maven/Java artifacts:
+```
+Search: "site:mvnrepository.com {artifact}" for usage stats
 ```
 
 ---

@@ -1,7 +1,7 @@
 ---
 name: source-evaluation
 description: "This skill should be used when evaluating source credibility, deciding which search results to trust, choosing between search providers, detecting SEO spam or content farms, selecting domain-specific sources (academic, medical, legal, technical), evaluating software packages or libraries, comparing tools or technologies, assessing GitHub repo health, checking adoption metrics, or when research quality depends on retrieval quality. Covers the source credibility taxonomy (T1-T6 tiers), CRAAP framework adaptation, multi-provider search strategy, artifact evaluation framework (health/adoption/authority signals for packages, repos, APIs, standards, technologies), and source quality anti-patterns."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Source Evaluation
@@ -90,6 +90,22 @@ Research often involves evaluating non-content artifacts — packages, tools, te
 | **Communities** | Messages per week, new member rate | Member count, active member ratio | Moderation quality, notable members, signal-to-noise ratio |
 | **Datasets/Benchmarks** | Last update, known issues addressed | Citation count, leaderboard participation | Creator credentials, methodology transparency, peer review |
 | **Claims/Statistics** | Date of study, methodology recency | Citation count, replication status | Funding source, sample size, peer review, original source |
+
+### Programmatic Stat Verification
+
+When evaluating artifacts, use APIs for exact stats instead of search snippets:
+
+| Ecosystem | API Command | Returns |
+|-----------|-------------|---------|
+| **GitHub** | `gh api repos/{owner}/{name}` | Stars, forks, license, language, last update, open issues |
+| **GitHub releases** | `gh api repos/{owner}/{name}/releases/latest` | Latest version tag, release date |
+| **npm** | `curl api.npmjs.org/downloads/point/last-week/{pkg}` | Exact weekly downloads |
+| **PyPI** | `curl pypistats.org/api/packages/{pkg}/recent` | Recent download counts |
+| **crates.io** | `curl crates.io/api/v1/crates/{crate}` | Downloads, version, recent downloads |
+| **RubyGems** | `curl rubygems.org/api/v1/gems/{gem}.json` | Downloads, latest version |
+| **Maven** | Search `site:mvnrepository.com {artifact}` | Usage stats page |
+
+These APIs return ground truth. Search snippets for these stats are unreliable.
 
 ### Red Flags by Artifact Type
 

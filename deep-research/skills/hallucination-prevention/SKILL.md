@@ -1,7 +1,7 @@
 ---
 name: hallucination-prevention
 description: "This skill should be used when producing any research output, verifying claims from web sources, checking citation accuracy, assessing confidence in findings, preventing hallucination cascading across agent boundaries, or reviewing research documents for factual reliability. Covers the hallucination taxonomy (7 types), OWASP ASI08 cascading failures, circuit breaker patterns, citation verification rules, confidence scoring, ground-truth validation, and known limitations of automated verification."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Hallucination Prevention
