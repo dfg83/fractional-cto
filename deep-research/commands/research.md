@@ -7,40 +7,6 @@ Conduct structured deep research on the given topic using the `deep-research` sk
 
 Follow this process:
 
-## Step 0: Web Access Permissions Check
-
-Before starting research, check if `WebSearch` and `WebFetch` are already permitted in the current project's settings. Read the file `.claude/settings.local.json` in the current working directory (where the session was started).
-
-- If the file **exists** and both `"WebSearch"` and `"WebFetch"` are in `permissions.allow` → proceed to Step 1.
-- If the file **does not exist**, or if either permission is missing:
-
-  Inform the user:
-
-  > "Deep research requires unrestricted WebSearch and WebFetch access. Without these permissions, you'll be prompted to approve every single web request, which makes research impractical. I can add these permissions to `.claude/settings.local.json` for this project."
-
-  Use `AskUserQuestion` to ask:
-  - **Add web permissions and restart** — add permissions, then instruct user to restart
-  - **Skip, I'll approve manually** — proceed without modification (expect many approval prompts)
-
-  If the user approves:
-  1. Read the existing `.claude/settings.local.json` file (if any). If it exists, parse the JSON and merge `"WebSearch"` and `"WebFetch"` into the `permissions.allow` array, avoiding duplicates. If the file does not exist, create the `.claude/` directory if needed, then create the file.
-  2. Write the updated file. If creating from scratch:
-     ```json
-     {
-       "permissions": {
-         "allow": [
-           "WebSearch",
-           "WebFetch"
-         ]
-       }
-     }
-     ```
-  3. **IMPORTANT:** Permissions from `.claude/settings.local.json` are loaded at session start. Tell the user:
-
-     > "Permissions added. Please restart your Claude Code session (`/exit` then relaunch) for them to take effect. Then run `/research` again — you won't see this step next time."
-
-  4. **Stop here.** Do not proceed to Step 1. The permissions are not active until the session restarts.
-
 ## Step 1: Topic Capture
 
 If no research topic was provided as an argument, ask the user to describe what they want to research.
@@ -97,7 +63,51 @@ Create the output directory structure:
     ...
 ```
 
-## Step 6: Agent Dispatch
+## Step 6: Permissions Check
+
+Now that the output location is confirmed, check if all required permissions are granted. Read `.claude/settings.local.json` in the current working directory.
+
+Required permissions:
+- `"WebSearch"` -- for web searches
+- `"WebFetch"` -- for fetching page content
+- `"Edit(//[absolute-output-dir]/**)"` -- for subagents to edit files in the output directory
+- `"Write(//[absolute-output-dir]/**)"` -- for subagents to create files in the output directory
+
+Resolve `[absolute-output-dir]` to the full absolute path of the confirmed output directory (e.g., `//Users/alice/project/research/topic-slug`).
+
+- If ALL four permissions are present in `permissions.allow` -> proceed to Step 7.
+- If ANY are missing:
+
+  Inform the user:
+
+  > "Research subagents need web access and file write permissions to function autonomously. I need to add the missing permissions to `.claude/settings.local.json` for this project. The file permissions will be scoped to your output directory: `[output-dir]`."
+
+  Use `AskUserQuestion` to ask:
+  - **Add permissions and restart** -- add missing permissions, then instruct user to restart
+  - **Skip, I'll approve manually** -- proceed without modification (expect many approval prompts)
+
+  If the user approves:
+  1. Read the existing `.claude/settings.local.json` (if any). Parse the JSON and merge the missing permissions into `permissions.allow`, avoiding duplicates. If the file does not exist, create the `.claude/` directory if needed, then create the file.
+  2. Write the updated file. Example from scratch:
+     ```json
+     {
+       "permissions": {
+         "allow": [
+           "WebSearch",
+           "WebFetch",
+           "Edit(//Users/alice/project/research/topic-slug/**)",
+           "Write(//Users/alice/project/research/topic-slug/**)"
+         ]
+       }
+     }
+     ```
+  3. **IMPORTANT:** Permissions from `.claude/settings.local.json` are loaded at session start. Tell the user:
+
+     > "Permissions added. Please restart your Claude Code session (`/exit` then relaunch) for them to take effect. Then run `/research` again."
+
+  4. **Stop here.** Do not proceed to Step 7. The permissions are not active until the session restarts.
+
+## Step 7: Agent Dispatch
 
 Spawn parallel `research-worker` subagents. Each agent receives:
 - Its assigned subtopic
@@ -108,7 +118,7 @@ Spawn parallel `research-worker` subagents. Each agent receives:
 
 Each worker writes its findings to its own intermediate document in the `workers/` directory.
 
-## Step 7: Verification
+## Step 8: Verification
 
 After all workers complete, spawn parallel `research-verifier` subagents — **one per worker document**. Each verifier receives:
 - The path to one worker's intermediate document
@@ -119,7 +129,7 @@ Each verifier independently re-fetches key sources, checks numerical claims and 
 
 **Do NOT skip this step.** Verification is mandatory. The synthesizer uses verification reports to correct errors and assign confidence scores.
 
-## Step 8: Synthesis
+## Step 9: Synthesis
 
 After all verifiers complete, dispatch a single `research-synthesizer` agent (runs on Opus) to merge all intermediate documents AND their verification reports into the final output. The synthesizer receives:
 - The research question
@@ -132,7 +142,7 @@ After all verifiers complete, dispatch a single `research-synthesizer` agent (ru
 
 When the synthesizer completes, read only the final `research-output.md` to present a brief summary to the user.
 
-## Step 9: Review and Next Steps
+## Step 10: Review and Next Steps
 
 Present a summary of the completed research to the user. Use `AskUserQuestion`:
 
@@ -150,7 +160,7 @@ If the user wants more research, dispatch additional workers targeting the speci
 
 `AskUserQuestion` must be called from **this command** (the main conversation), never from subagents. The `research-worker` subagents handle web research and write intermediate documents. This command presents results and calls `AskUserQuestion` for every decision gate.
 
-**Pattern:** analyze query → call `AskUserQuestion` (refine/proceed) → present plan → call `AskUserQuestion` (adjust/proceed) → dispatch workers → dispatch verifiers → dispatch synthesizer → call `AskUserQuestion` (done/deepen/investigate).
+**Pattern:** analyze query -> call `AskUserQuestion` (refine/proceed) -> present plan -> call `AskUserQuestion` (adjust/proceed) -> confirm output location -> check permissions -> dispatch workers -> dispatch verifiers -> dispatch synthesizer -> call `AskUserQuestion` (done/deepen/investigate).
 
 ### Decision Points
 
@@ -158,4 +168,5 @@ This applies to ALL decision points with fixed options, including:
 - Scope refinement (Step 3)
 - Research plan confirmation (Step 4)
 - Output location (Step 5)
-- Next steps after synthesis (Step 9)
+- Permissions (Step 6)
+- Next steps after synthesis (Step 10)

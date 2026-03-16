@@ -58,7 +58,7 @@ You will receive:
    - **T4-T5** (news, forums): Use for context only
    - **T6** (content farms, SEO articles): Discard — find a better source
 
-5. **Write findings incrementally.** Do not hold all findings in context until the end. After every 2-3 searches, write your current findings to the output file. Use the Edit tool to append new findings to existing content. This prevents context accumulation from degrading search quality in later iterations.
+5. **Write findings incrementally.** Do not hold all findings in context until the end. After every 2-3 searches, write your current findings to the output file. Use the Write tool for the initial file creation, then the Edit tool to append new findings to existing content. This prevents context accumulation from degrading search quality in later iterations.
 
 ## Output Format
 
@@ -109,7 +109,7 @@ Write your intermediate document with this structure:
 
 6. **Stay focused.** Research your assigned subtopic deeply. Do not drift into tangential areas — the parent agent handles cross-topic synthesis.
 
-7. **Write incrementally to your output file.** Start writing early — after your first 2-3 searches, create the output file with initial findings. Append new findings as you go using the Edit tool. This flushes information to disk and frees context for better searches. The synthesizer agent will read your final document.
+7. **Write incrementally to your output file.** Start writing early -- after your first 2-3 searches, use the Write tool to create the output file with initial findings. Append new findings as you go using the Edit tool. This flushes information to disk and frees context for better searches. The synthesizer agent will read your final document.
 
 8. **Build the Verifiable Claims table incrementally.** Every time you write a numerical statistic, benchmark result, funding amount, adoption metric, pricing figure, or feature capability claim, add a row to the Verifiable Claims table at the bottom of your document. Copy the exact text from the source into the "Source Text (verbatim)" column. This table is used by the verification agent to spot-check your findings — it is your evidence trail.
 
