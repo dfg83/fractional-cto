@@ -103,6 +103,15 @@
       "author": {
         "name": "Dr. Oliver Borchers"
       }
+    },
+    {
+      "name": "rechtlich-sicher",
+      "description": "Rechtliche Compliance-Pruefung fuer deutsche Websites -- Impressum, Datenschutz, Cookies, E-Commerce, Barrierefreiheit per Playwright-Scan und Code-Inspektion",
+      "version": "0.1.0",
+      "source": "./rechtlich-sicher",
+      "author": {
+        "name": "Dr. Oliver Borchers"
+      }
     }
   ]
 }
