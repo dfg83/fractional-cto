@@ -1,7 +1,7 @@
 ---
 name: stress-test-methodology
 description: "This skill should be used when the user wants to stress-test a plan, review a plan for gaps, challenge assumptions in a planning document, run adversarial review, apply red-team/blue-team analysis to a plan, or asks 'is my plan sound', 'what am I missing', 'what could go wrong'. Covers the adversarial what-if methodology, verdict system, tool scope selection, and how to interpret stress test results."
-version: 0.1.0
+version: 0.2.0
 ---
 
 ## Adversarial Plan Review
@@ -21,6 +21,29 @@ The technique works because the agents have separate contexts: the red team gene
 - After drafting a design document and before sharing it for review
 - When you feel a plan is "done" but want to pressure-test it
 - When surrounding context is rich enough to ground the analysis (codebase, supporting docs, config files)
+
+## Stressor Modes
+
+### Grounded Mode
+The red team generates what-if questions strictly tied to plan artifacts. Every question references a specific file, config value, dependency, or code path found in the surrounding context. This mode finds gaps in what the plan explicitly covers.
+
+Best for: implementation plans with a full codebase, detailed technical designs with supporting configs.
+
+### Creative Mode (Residuality Theory)
+Inspired by Barry O'Reilly's Residuality Theory, creative mode adds extreme, cross-domain stressors that go beyond artifact grounding. Instead of only asking "what does the plan miss?", it asks "what survives when extreme stress hits?"
+
+Additional stressor categories:
+- Extreme scale (10x/100x assumptions)
+- Dependency disappearance (vendor, library, team member gone)
+- Regulatory/compliance shifts
+- Team/organizational disruption
+- Market/competitive shocks
+- Graceful degradation analysis ("what survives?" not just "what breaks?")
+
+Best for: strategic plans, plans with external dependencies, plans where hidden coupling matters more than line-level coverage.
+
+### Both
+Runs grounded questions first (artifact-tied), then creative questions (extreme/cross-domain). Most thorough. The QA report separates grounded and creative sections so you can triage accordingly.
 
 ## The Verdict System
 
@@ -74,6 +97,7 @@ If most questions are ANSWERED, the plan is solid. If most are NOT COVERED, the 
 - The red team can only challenge what it can see. If critical context is in a separate repo, a Confluence page, or someone's head, the red team cannot generate questions about it.
 - The blue team's ANSWERED verdicts depend on its tool scope. A local-only blue team marking something ANSWERED based on a code comment is weaker than a system-verification blue team confirming it against a live API.
 - Neither agent understands organizational context (team capacity, political constraints, budget). These factors affect plan feasibility but are invisible to the agents.
+- Creative mode questions are not grounded in artifacts. The blue team may mark many as UNCERTAIN or NOT COVERED simply because the plan was never designed to address extreme scenarios. This is expected -- the value is in identifying which extreme scenarios the plan *should* address.
 
 ## Running a Stress Test
 

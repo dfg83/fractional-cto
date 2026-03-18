@@ -23,7 +23,15 @@ Briefly assess the surrounding context available for grounding:
 
 Present this assessment to the user so they understand what the agents will work with.
 
-## Step 3: Tool Scope
+## Step 3: Stressor Mode
+
+Use `AskUserQuestion` to ask the user which stressor mode the red team should use:
+
+- **Grounded** -- What-if questions strictly tied to plan artifacts and code. Every question references a specific file, config, dependency, or code path. Best for detailed implementation plans with rich surrounding context.
+- **Creative** -- Adds extreme, cross-domain stressors inspired by Residuality Theory. Includes business, regulatory, team, market, and "what survives?" questions that go beyond what the artifacts suggest. Best for plans where hidden coupling and blind spots matter more than line-by-line coverage.
+- **Both** -- Runs grounded questions first, then a separate creative pass. Most thorough but produces more questions.
+
+## Step 4: Tool Scope
 
 Use `AskUserQuestion` to ask the user what tool scope the blue team should have:
 
@@ -33,7 +41,7 @@ Use `AskUserQuestion` to ask the user what tool scope the blue team should have:
 
 Note: The red team always uses local artifacts only, regardless of this choice.
 
-## Step 4: Permissions Check
+## Step 5: Permissions Check
 
 Determine the output file path: same directory as the plan file, with `-stress-test.md` suffix (e.g., `plan.md` -> `plan-stress-test.md`). Resolve to an absolute path.
 
@@ -56,28 +64,29 @@ If ANY are missing:
 
   **Stop here** if permissions were added -- they take effect after restart.
 
-## Step 5: Red Team
+## Step 6: Red Team
 
 Spawn a `red-team` subagent. Provide it with:
 - The path to the plan file
 - A description of the surrounding context (what directories to explore, what the codebase contains, what supporting documents exist)
+- The stressor mode selected by the user in Step 3 ("grounded", "creative", or "both")
 
 The red team reads the plan and artifacts, then returns a set of what-if questions organized by category.
 
 When the red team completes, briefly present the question count and categories to the user. Do NOT present all questions in full -- the blue team report will contain them.
 
-## Step 6: Blue Team
+## Step 7: Blue Team
 
 Spawn a `blue-team` subagent. Provide it with:
 - The path to the plan file
 - The full text of the red team's what-if questions (from the agent result)
 - The output file path for the QA report
-- The tool scope selected by the user in Step 3
+- The tool scope selected by the user in Step 4
 - Today's date for the report header
 
 The blue team reads the plan, artifacts, and what-if questions, then writes a QA report with verdicts for each question.
 
-## Step 7: Results
+## Step 8: Results
 
 When the blue team completes, read the QA report and present a summary to the user:
 - Total questions evaluated
