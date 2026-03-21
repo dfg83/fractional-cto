@@ -4,7 +4,7 @@
 
 # fractional-cto: The AI CTO Co-Pilot for SaaS Engineering
 
-> 102 skills, 16 commands, and 17 agents across 12 plugins. Opinionated, research-backed Claude Code plugins for building SaaS products that ship.
+> 93 skills, 15 commands, and 16 agents across 11 plugins. Opinionated, research-backed Claude Code plugins for building SaaS products that ship.
 
 ![Plugins overview](.docs/images/plugins-overview.png)
 
@@ -17,7 +17,6 @@ Need an API review? `/api-review`
 Auditing code quality? `/pedantic-review`
 Researching a topic? `/research "your question"`
 Stress-testing a plan? `/stress-test path/to/plan.md`
-Website rechtlich pruefen? `/rechtlich-sicher https://example.de`
 Compressing your CLAUDE.md? `/compress path/to/file.md`
 
 If this project helps you, star the repo.
@@ -57,7 +56,6 @@ Each plugin carries review checklists, good/bad pattern comparisons, working cod
 /plugin install structured-brainstorming@fractional-cto
 /plugin install retell@fractional-cto
 /plugin install stress-test@fractional-cto
-/plugin install rechtlich-sicher@fractional-cto
 /plugin install markdown-compressor@fractional-cto
 ```
 
@@ -403,38 +401,7 @@ Compress LLM agent instructions and code documentation through iterative section
 </details>
 
 <details>
-<summary><strong>11. rechtlich-sicher</strong> -- Deutsche Website-Compliance per Playwright-Scan (9 skills, 1 command, 1 agent)</summary>
-
-Automatisierte rechtliche Compliance-Pruefung fuer deutsche Websites. Prueft Impressum, Datenschutzerklaerung, Cookie-Banner, E-Commerce-Pflichten, Barrierefreiheit und weitere Rechtsgebiete per Deep Scan und optionaler Code-Inspektion.
-
-**HAFTUNGSAUSSCHLUSS:** Keine Rechtsberatung. Ergebnisse dienen nur der Information. Keine Haftung fuer Schaeden. Fachanwalt konsultieren.
-
-**Skills (9):**
-
-- `using-rechtlich-sicher` -- Pflichten-Matrix, Fristen, Skill-Index
-- `impressum` -- ss5 DDG, ss18 MStV, DL-InfoV, Adressfrage
-- `datenschutz` -- DSGVO Art. 13/14, Google Analytics, Google Fonts, AVV, VVT
-- `cookies` -- ss25 TDDDG, 10 Banner-Anforderungen, Consent-Tools
-- `e-commerce` -- AGB, Fernabsatz, Widerruf, PAngV, VerpackG, Omnibus
-- `barrierefreiheit` -- BFSG, WCAG 2.1 AA, Kleinstunternehmen-Ausnahme
-- `urheberrecht` -- Bildrechte, KI-Inhalte, AI Act, DSA Hostingprivileg
-- `newsletter-marketing` -- ss7 UWG, Double-Opt-In, Bestandskundenausnahme
-- `weitere-pflichten` -- E-Rechnung, HinSchG, Jugendschutz, GPSR
-
-**Commands:** `/rechtlich-sicher <URL>` -- Deep Scan per Playwright + Code-Inspektion mit Compliance-Bericht
-
-**Agents:** `compliance-checker` -- Automatisierte Pruefung mit strukturiertem Bericht auf Deutsch
-
-**Examples:**
-
-- `/rechtlich-sicher https://mein-shop.de` -- Online-Shop auf Compliance pruefen
-- `/rechtlich-sicher https://portfolio.de` -- Freelancer-Website pruefen
-- `Pruefe meine Website auf rechtliche Compliance`
-
-</details>
-
-<details>
-<summary><strong>12. stress-test</strong> -- Adversarial plan review with red-team/blue-team agents (1 skill, 1 command, 2 agents)</summary>
+<summary><strong>11. stress-test</strong> -- Adversarial plan review with red-team/blue-team agents (1 skill, 1 command, 2 agents)</summary>
 
 Adversarial plan review using two independent agents: a red team generates what-if questions targeting gaps and unverified assumptions, then a blue team answers each with a grounded verdict. Configurable tool scope lets the blue team verify against local artifacts, web research, or live systems.
 
