@@ -1,0 +1,120 @@
+{
+  "name": "fractional-cto",
+  "description": "AI CTO Co-Pilot for SaaS Engineering - 93 skills, 15 commands, 16 agents",
+  "source": "https://github.com/dfg83/fractional-cto",
+  "added": "2026-03-22",
+  "plugins": [
+    {
+      "name": "saas-design-principles",
+      "path": "saas-design-principles",
+      "skills_count": 13,
+      "commands": ["/saas-review"],
+      "agents": ["saas-design-reviewer"],
+      "description": "Speed, navigation, forms, tables, auth, accessibility"
+    },
+    {
+      "name": "visual-design-principles",
+      "path": "visual-design-principles",
+      "skills_count": 12,
+      "commands": ["/design-review"],
+      "agents": ["visual-design-reviewer"],
+      "description": "Layout, typography, color, whitespace, accessibility"
+    },
+    {
+      "name": "api-design-principles",
+      "path": "api-design-principles",
+      "skills_count": 13,
+      "commands": ["/api-review"],
+      "agents": ["api-design-reviewer"],
+      "description": "Routes, errors, auth, caching, webhooks, versioning"
+    },
+    {
+      "name": "cloud-foundation-principles",
+      "path": "cloud-foundation-principles",
+      "skills_count": 16,
+      "commands": ["/cloud-foundation-review"],
+      "agents": ["cloud-foundation-reviewer"],
+      "description": "Multi-account governance, IaC, networking, security"
+    },
+    {
+      "name": "pedantic-coder",
+      "path": "pedantic-coder",
+      "skills_count": 16,
+      "commands": ["/pedantic-review", "/pedantic-audit", "/guidelines-review"],
+      "agents": ["pedantic-reviewer"],
+      "description": "Naming, casing, symmetry, imports, dead code, language packs"
+    },
+    {
+      "name": "python-package",
+      "path": "python-package",
+      "skills_count": 13,
+      "commands": ["/package-review", "/package-audit"],
+      "agents": ["package-reviewer"],
+      "description": "Project structure, pyproject.toml, testing, CI/CD, supply chain"
+    },
+    {
+      "name": "deep-research",
+      "path": "deep-research",
+      "skills_count": 5,
+      "commands": ["/research"],
+      "agents": ["research-worker", "research-verifier", "research-synthesizer"],
+      "description": "Parallel web research, source verification, synthesis"
+    },
+    {
+      "name": "structured-brainstorming",
+      "path": "structured-brainstorming",
+      "skills_count": 1,
+      "commands": ["/brainstorm"],
+      "agents": ["brainstorm-explorer"],
+      "description": "8 thinking methods with parallel subagent exploration"
+    },
+    {
+      "name": "retell",
+      "path": "retell",
+      "skills_count": 2,
+      "commands": ["/retell"],
+      "agents": ["triage-analyst", "outline-architect"],
+      "description": "Transform conversations into blog posts, 5-stage pipeline"
+    },
+    {
+      "name": "markdown-compressor",
+      "path": "markdown-compressor",
+      "skills_count": 1,
+      "commands": ["/compress"],
+      "agents": ["section-compressor", "compression-reviewer"],
+      "description": "Compress agent instructions with zero information loss"
+    },
+    {
+      "name": "stress-test",
+      "path": "stress-test",
+      "skills_count": 1,
+      "commands": ["/stress-test"],
+      "agents": ["red-team", "blue-team"],
+      "description": "Adversarial plan review with red-team/blue-team agents"
+    }
+  ],
+  "totals": {
+    "plugins": 11,
+    "skills": 93,
+    "commands": 15,
+    "agents": 16
+  },
+  "sync": {
+    "cron_job_id": "d7af9810-1d3d-47c9-88ef-f3090059732a",
+    "schedule": "0 3 * * *",
+    "timezone": "Europe/Berlin",
+    "agent": "NightOwl"
+  },
+  "skill_links": {
+    "location": "~/.openclaw/workspace/skills/fractional-cto/",
+    "plugins": [
+      "saas-design",
+      "api-design",
+      "visual-design",
+      "cloud-foundation",
+      "pedantic-coder",
+      "python-package",
+      "deep-research"
+    ]
+  }
+}
